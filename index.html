@@ -59,13 +59,6 @@
     <!-- Supabase and auth -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/cache.js"></script>
-    <script>
-        window.toggleMobileMenu = function() {
-            var navbar = document.getElementById('navbar');
-            if (navbar) navbar.classList.toggle('active');
-            return false;
-        };
-    </script>
     <!-- Contact modal styles (unchanged) -->
     <style>
         .modal {
@@ -286,7 +279,7 @@
     <script src="js/app.js"></script>
     <script src="js/auth.js"></script>
     
-    <!-- Mobile menu enhancements -->
+    <!-- Mobile menu enhancements with guaranteed login/signup handling -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const checkbox = document.getElementById('menu-toggle-checkbox');
@@ -301,12 +294,23 @@
                 });
             }
 
-            // Close menu when any link or button inside navLinks is clicked
+            // Handle clicks inside the menu – close menu and trigger auth modal if needed
             if (navLinks) {
                 navLinks.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
-                        checkbox.checked = false;
+                    const target = e.target.closest('a, button'); // handle clicks on child elements
+                    if (!target) return;
+
+                    // Close the menu
+                    checkbox.checked = false;
+
+                    // If it's a login or signup button, open auth modal
+                    if (target.classList.contains('btn-login') || target.classList.contains('btn-primary')) {
+                        e.preventDefault(); // prevent any default link action (href="#")
+                        if (typeof window.openAuthModal === 'function') {
+                            window.openAuthModal();
+                        }
                     }
+                    // For other links, let the browser navigate naturally
                 });
             }
 
@@ -384,4 +388,4 @@
         });
     </script>
 </body>
-    </html>
+        </html>
