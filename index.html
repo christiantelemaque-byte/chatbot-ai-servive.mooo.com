@@ -10,12 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <!-- Critical mobile menu CSS -->
     <style>
-        /* Force hide the checkbox */
         #menu-toggle-checkbox {
             display: none !important;
         }
-
-        /* Mobile menu styles */
         @media (max-width: 768px) {
             .nav-links {
                 display: none !important;
@@ -30,11 +27,9 @@
                 box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
                 z-index: 1000 !important;
             }
-
             #menu-toggle-checkbox:checked ~ .nav-links {
                 display: flex !important;
             }
-
             .menu-toggle {
                 display: block !important;
                 font-size: 1.8rem;
@@ -43,8 +38,6 @@
                 padding: 0.5rem;
             }
         }
-
-        /* Desktop override */
         @media (min-width: 769px) {
             .menu-toggle {
                 display: none !important;
@@ -55,12 +48,7 @@
                 box-shadow: none !important;
             }
         }
-    </style>
-    <!-- Supabase and auth -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="js/cache.js"></script>
-    <!-- Contact modal styles (unchanged) -->
-    <style>
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -144,6 +132,18 @@
             color: #dc3545;
         }
     </style>
+    <!-- Supabase and auth -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/cache.js"></script>
+    <!-- Define global openAuthModal fallback -->
+    <script>
+        window.openAuthModal = window.openAuthModal || function() {
+            console.log('openAuthModal called (fallback)');
+            var modal = document.getElementById('authModal');
+            if (modal) modal.style.display = 'block';
+            if (typeof loadAuthForms === 'function') loadAuthForms();
+        };
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -153,12 +153,10 @@
                 <i class="fas fa-gem"></i>
                 <span>LuxeCompanions</span>
             </div>
-            <!-- Hidden checkbox controls the menu -->
             <input type="checkbox" id="menu-toggle-checkbox">
             <label for="menu-toggle-checkbox" class="menu-toggle" id="mobileMenu">
                 <i class="fas fa-bars"></i>
             </label>
-            <!-- Navigation links – will be populated by auth.js -->
             <div class="nav-links" id="navLinks"></div>
         </div>
     </nav>
@@ -169,7 +167,7 @@
             <h1>Elegant Connections for Discerning Individuals</h1>
             <p>Join our exclusive community of sophisticated companions</p>
             <div class="hero-buttons">
-                <a href="#" id="heroSignupBtn" class="btn-hero-primary">Become a Companion</a>
+                <a href="#" id="heroSignupBtn" class="btn-hero-primary" onclick="openAuthModal(); return false;">Become a Companion</a>
                 <a href="#vip" class="btn-hero-secondary">View VIP Companions</a>
             </div>
         </div>
@@ -251,6 +249,17 @@
         </div>
     </footer>
 
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('authModal').style.display='none'">&times;</span>
+            <div id="authForms">
+                <!-- Login/Register forms will be loaded by auth.js -->
+                <div style="text-align: center; padding: 20px;">Loading...</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Contact Modal -->
     <div id="contactModal" class="modal">
         <div class="modal-content">
@@ -279,14 +288,14 @@
     <script src="js/app.js"></script>
     <script src="js/auth.js"></script>
     
-    <!-- Mobile menu enhancements with guaranteed login/signup handling -->
+    <!-- Mobile menu and auth handling -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const checkbox = document.getElementById('menu-toggle-checkbox');
             const mobileMenu = document.getElementById('mobileMenu');
             const navLinks = document.getElementById('navLinks');
 
-            // Toggle menu when hamburger is clicked
+            // Toggle menu on hamburger click
             if (mobileMenu && checkbox) {
                 mobileMenu.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -294,33 +303,37 @@
                 });
             }
 
-            // Handle clicks inside the menu – close menu and trigger auth modal if needed
+            // Handle clicks inside menu – close menu and open auth modal if needed
             if (navLinks) {
                 navLinks.addEventListener('click', function(e) {
-                    const target = e.target.closest('a, button'); // handle clicks on child elements
+                    const target = e.target.closest('a, button');
                     if (!target) return;
 
-                    // Close the menu
+                    // Close menu
                     checkbox.checked = false;
 
-                    // If it's a login or signup button, open auth modal
+                    // If it's login/signup, open auth modal
                     if (target.classList.contains('btn-login') || target.classList.contains('btn-primary')) {
-                        e.preventDefault(); // prevent any default link action (href="#")
+                        e.preventDefault();
                         if (typeof window.openAuthModal === 'function') {
                             window.openAuthModal();
+                        } else {
+                            // Fallback: show modal directly
+                            document.getElementById('authModal').style.display = 'block';
                         }
                     }
-                    // For other links, let the browser navigate naturally
                 });
             }
 
-            // Close menu when window is resized above mobile
+            // Close menu on window resize above mobile
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 768 && checkbox) {
                     checkbox.checked = false;
                 }
             });
         });
+
+        // Hero button already has inline onclick, so it's covered.
     </script>
 
     <!-- Contact modal script -->
@@ -388,4 +401,4 @@
         });
     </script>
 </body>
-        </html>
+                                            </html>
