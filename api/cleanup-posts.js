@@ -23,9 +23,12 @@ function extractFilePathFromUrl(url) {
 }
 
 export default async function handler(req, res) {
-  // Only allow internal cron with secret token
+  // Allow only cron jobs (internal Vercel) or manual with secret token
+  const isVercelCron = req.headers['x-vercel-cron'] === 'true';
   const authHeader = req.headers.authorization;
-  if (!authHeader || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const hasValidToken = authHeader === `Bearer ${process.env.CRON_SECRET}`;
+
+  if (!isVercelCron && !hasValidToken) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -127,4 +130,4 @@ export default async function handler(req, res) {
     console.error('Cleanup error:', error);
     res.status(500).json({ error: error.message });
   }
-    }
+      }
