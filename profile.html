@@ -7,38 +7,148 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Universal box-sizing and responsive modal styles (same as dashboard) -->
+    <style>
+        * { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        #menu-toggle-checkbox { display: none !important; }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                background: white !important;
+                position: absolute !important;
+                top: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+                padding: 1rem 0 !important;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+                z-index: 1000 !important;
+            }
+            #menu-toggle-checkbox:checked ~ .nav-links { display: flex !important; }
+            .menu-toggle { display: block !important; font-size: 1.8rem; color: var(--primary-pink); cursor: pointer; padding: 0.5rem; }
+        }
+        @media (min-width: 769px) {
+            .menu-toggle { display: none !important; }
+            .nav-links { display: flex !important; position: static !important; box-shadow: none !important; }
+        }
+        /* Responsive modal styles */
+        .modal {
+            display: none !important;
+            position: fixed !important;
+            z-index: 2000 !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: rgba(0,0,0,0.5) !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 1rem !important;
+            box-sizing: border-box !important;
+        }
+        .modal.show { display: flex !important; }
+        .modal-content {
+            background: white !important;
+            padding: 2rem !important;
+            border-radius: 15px !important;
+            max-width: 500px !important;
+            width: 100% !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            position: relative !important;
+            box-sizing: border-box !important;
+            margin: auto !important;
+        }
+        @media (max-width: 480px) { .modal-content { padding: 1.5rem !important; } }
+        .close { position: absolute !important; right: 15px !important; top: 10px !important; font-size: 28px !important; cursor: pointer !important; color: var(--primary-pink) !important; line-height: 1 !important; }
+        .contact-form .form-group { margin-bottom: 1.5rem !important; }
+        .contact-form label { display: block !important; margin-bottom: 0.5rem !important; font-weight: 500 !important; }
+        .contact-form input, .contact-form textarea {
+            width: 100% !important;
+            padding: 0.8rem !important;
+            border: 2px solid var(--light-pink) !important;
+            border-radius: 8px !important;
+            font-size: 1rem !important;
+            box-sizing: border-box !important;
+        }
+        .contact-form textarea { min-height: 100px !important; resize: vertical !important; }
+        .contact-form button {
+            width: 100% !important;
+            padding: 1rem !important;
+            background: linear-gradient(135deg, var(--primary-pink), var(--dark-pink)) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 30px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: transform 0.3s !important;
+        }
+        .contact-form button:hover { transform: translateY(-2px) !important; }
+        .contact-form button:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
+        .contact-message { margin-top: 1rem !important; text-align: center !important; font-size: 0.9rem !important; word-wrap: break-word !important; }
+        .contact-message.success { color: #28a745 !important; }
+        .contact-message.error { color: #dc3545 !important; }
+
+        /* Profile page specific styles */
+        .profile-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .profile-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .profile-success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/cache.js"></script>
-    <!-- Mobile menu toggle (same as index) -->
     <script>
-        window.toggleMobileMenu = function() {
-            var navbar = document.getElementById('navbar');
-            if (navbar) navbar.classList.toggle('active');
-            return false;
+        window.openAuthModal = window.openAuthModal || function() {
+            var modal = document.getElementById('authModal');
+            if (modal) modal.style.display = 'block';
+            if (typeof loadAuthForms === 'function') loadAuthForms();
         };
     </script>
 </head>
 <body>
-    <!-- Navigation (identical to dashboard) -->
+    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-gem"></i>
-                <span>LuxeCompanions</span>
-            </div>
-            <div class="menu-toggle" id="mobileMenu" onclick="toggleMobileMenu(); event.stopPropagation();">
-                <i class="fas fa-bars"></i>
-            </div>
+            <div class="logo"><i class="fas fa-gem"></i><span>LuxeCompanions</span></div>
+            <input type="checkbox" id="menu-toggle-checkbox">
+            <label for="menu-toggle-checkbox" class="menu-toggle" id="mobileMenu"><i class="fas fa-bars"></i></label>
             <div class="nav-links" id="navLinks"></div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main style="padding: 2rem 1.5rem; max-width: 600px; margin: 0 auto;">
-        <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+    <main style="padding: 2rem 1.5rem;">
+        <div class="profile-container">
             <h1 style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--dark-pink);">
                 <i class="fas fa-user-edit" style="color: var(--primary-pink);"></i> My Profile
             </h1>
+
+            <div id="profileError" class="profile-error" style="display: none;"></div>
+            <div id="profileSuccess" class="profile-success" style="display: none;"></div>
 
             <form id="profileForm">
                 <div class="form-group">
@@ -57,17 +167,16 @@
                 </div>
 
                 <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button type="submit" class="btn-primary">
+                    <button type="submit" class="btn-primary" id="updateBtn">
                         <i class="fas fa-save"></i> Update Profile
                     </button>
                     <a href="dashboard.html" class="btn-secondary">Cancel</a>
                 </div>
             </form>
-            <div id="profileMessage" class="auth-message" style="margin-top: 1.5rem;"></div>
         </div>
     </main>
 
-    <!-- Footer (same as index) -->
+    <!-- Footer with contact button -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
@@ -85,132 +194,231 @@
             </div>
             <div class="footer-section">
                 <h4>Contact</h4>
-                <p><i class="fas fa-envelope"></i> support@luxecompanions.com</p>
+                <button id="contactBtn" class="btn-contact" style="background: none; border: none; color: #ccc; cursor: pointer; padding: 0; font-size: inherit; text-decoration: underline;">Contact us</button>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>© 2024 LuxeCompanions. Must be 21+ to access. All rights reserved.</p>
+            <p>© 2024 LuxeCompanions. Must be 18+ to access. All rights reserved.</p>
             <p class="disclaimer">This website is for legal companionship services only. Users must comply with all applicable laws.</p>
         </div>
     </footer>
 
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('authModal').style.display='none'">&times;</span>
+            <div id="authForms"><div style="text-align:center; padding:20px;">Loading...</div></div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2 style="color: var(--dark-pink); margin-bottom: 1.5rem;">Contact Us</h2>
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="contactName">Full Name *</label>
+                    <input type="text" id="contactName" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Email *</label>
+                    <input type="email" id="contactEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactMessage">Message *</label>
+                    <textarea id="contactMessage" required></textarea>
+                </div>
+                <button type="submit" id="contactSubmit">Send Message</button>
+                <div id="contactStatus" class="contact-message"></div>
+            </form>
+        </div>
+    </div>
+
     <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
     <script>
-        // ------------------------------------------------------------
-        // PROFILE CONTROLLER WITH CACHING
-        // ------------------------------------------------------------
-        document.addEventListener('DOMContentLoaded', async function() {
+        // Profile controller with robust error handling
+        (async function() {
+            const errorDiv = document.getElementById('profileError');
+            const successDiv = document.getElementById('profileSuccess');
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const memberSinceInput = document.getElementById('memberSince');
+            const updateBtn = document.getElementById('updateBtn');
+
+            const showError = (msg) => {
+                errorDiv.textContent = msg;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            };
+            const showSuccess = (msg) => {
+                successDiv.textContent = msg;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            };
+
             if (!window.supabase) {
-                window.location.href = 'index.html';
+                showError('Supabase client not loaded. Please refresh.');
                 return;
             }
 
-            const { data: { user }, error } = await window.supabase.auth.getUser();
-            if (error || !user) {
-                window.location.href = 'index.html';
-                return;
-            }
-
-            // Try to load from cache first
-            let profile = getUserProfile();
-            if (profile && profile.id === user.id) {
-                fillForm(user, profile);
-                // Refresh in background
-                refreshProfile(user.id);
-            } else {
-                await refreshProfile(user.id);
-            }
-        });
-
-        async function refreshProfile(userId) {
             try {
-                const { data: profile, error } = await window.supabase
+                const { data: { user }, error: userError } = await window.supabase.auth.getUser();
+                if (userError) throw userError;
+                if (!user) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Load profile
+                const { data: profile, error: profileError } = await window.supabase
                     .from('profiles')
                     .select('*')
-                    .eq('id', userId)
+                    .eq('id', user.id)
                     .single();
 
-                if (error) throw error;
+                if (profileError) throw profileError;
 
-                // Cache the fresh profile
-                setUserProfile(profile);
-                fillForm(user, profile);
-            } catch (err) {
-                console.error('Profile load error:', err);
-                showMessage('Failed to load profile. Please refresh.', 'error');
-            }
-        }
+                // Fill form
+                usernameInput.value = profile.username || '';
+                emailInput.value = user.email;
+                const created = new Date(user.created_at);
+                memberSinceInput.value = created.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-        function fillForm(user, profile) {
-            document.getElementById('username').value = profile.username || '';
-            document.getElementById('email').value = user.email;
-            const created = new Date(user.created_at);
-            document.getElementById('memberSince').value = created.toLocaleDateString('en-US', { 
-                year: 'numeric', month: 'long', day: 'numeric' 
-            });
-        }
+                // Handle update
+                document.getElementById('profileForm').addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const newUsername = usernameInput.value.trim();
 
-        // Handle update
-        document.getElementById('profileForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const newUsername = document.getElementById('username').value.trim();
+                    if (!newUsername) {
+                        showError('Username cannot be empty');
+                        return;
+                    }
 
-            if (!newUsername) {
-                showMessage('Username cannot be empty', 'error');
-                return;
-            }
+                    updateBtn.disabled = true;
+                    updateBtn.textContent = 'Updating...';
 
-            try {
-                const { data: { user } } = await window.supabase.auth.getUser();
-                
-                // Update 'profiles' table
-                const { error: updateError } = await window.supabase
-                    .from('profiles')
-                    .update({ username: newUsername })
-                    .eq('id', user.id);
+                    try {
+                        const { error: updateError } = await window.supabase
+                            .from('profiles')
+                            .update({ username: newUsername })
+                            .eq('id', user.id);
 
-                if (updateError) throw updateError;
+                        if (updateError) throw updateError;
 
-                // Also update user metadata (optional)
-                await window.supabase.auth.updateUser({
-                    data: { username: newUsername }
+                        // Also update user metadata (optional)
+                        await window.supabase.auth.updateUser({
+                            data: { username: newUsername }
+                        });
+
+                        showSuccess('✅ Profile updated successfully!');
+                        // Clear cache if available
+                        if (typeof clearCache === 'function') {
+                            clearCache(CACHE_KEYS.USER_PROFILE);
+                        }
+                    } catch (err) {
+                        showError('Error: ' + err.message);
+                    } finally {
+                        updateBtn.disabled = false;
+                        updateBtn.textContent = 'Update Profile';
+                    }
                 });
 
-                // Clear profile cache so next load gets fresh data
-                clearCache(CACHE_KEYS.USER_PROFILE);
-
-                showMessage('✅ Profile updated successfully!', 'success');
             } catch (err) {
-                showMessage('Error: ' + err.message, 'error');
+                console.error('Profile load error:', err);
+                showError('Failed to load profile. Please refresh.');
+            }
+        })();
+
+        // Mobile menu and auth handling (same as other pages)
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('menu-toggle-checkbox');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navLinks = document.getElementById('navLinks');
+
+            if (mobileMenu && checkbox) {
+                mobileMenu.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    checkbox.checked = !checkbox.checked;
+                });
+            }
+
+            if (navLinks) {
+                navLinks.addEventListener('click', function(e) {
+                    const target = e.target.closest('a, button');
+                    if (!target) return;
+                    checkbox.checked = false;
+
+                    if (target.tagName === 'BUTTON' && target.classList.contains('btn-login')) {
+                        e.preventDefault();
+                        if (typeof window.openAuthModal === 'function') {
+                            window.openAuthModal();
+                        } else {
+                            document.getElementById('authModal').style.display = 'block';
+                        }
+                    }
+                });
+            }
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && checkbox) checkbox.checked = false;
+            });
+        });
+
+        // Contact modal script (same as before)
+        const modal = document.getElementById('contactModal');
+        const btn = document.getElementById('contactBtn');
+        const closeBtn = document.getElementById('closeModal');
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('contactSubmit');
+        const statusDiv = document.getElementById('contactStatus');
+
+        btn.addEventListener('click', () => modal.classList.add('show'));
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+            form.reset();
+            statusDiv.textContent = '';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                form.reset();
+                statusDiv.textContent = '';
             }
         });
 
-        function showMessage(msg, type) {
-            const msgDiv = document.getElementById('profileMessage');
-            msgDiv.textContent = msg;
-            msgDiv.className = 'auth-message ' + type;
-            msgDiv.style.display = 'block';
-            setTimeout(() => msgDiv.style.display = 'none', 5000);
-        }
-    </script>
-
-    <!-- Mobile menu close handler (same as dashboard) -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var navbar = document.getElementById('navbar');
-            document.addEventListener('click', function(e) {
-                if (navbar.classList.contains('active') && !navbar.contains(e.target)) navbar.classList.remove('active');
-            });
-            var navLinks = document.getElementById('navLinks');
-            if (navLinks) {
-                navLinks.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') navbar.classList.remove('active');
-                });
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            statusDiv.textContent = 'Sending...';
+            statusDiv.className = 'contact-message';
+            submitBtn.disabled = true;
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const message = document.getElementById('contactMessage').value.trim();
+            let userId = null;
+            if (window.supabase) {
+                const { data: { user } } = await window.supabase.auth.getUser();
+                userId = user?.id || null;
             }
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768) navbar.classList.remove('active');
-            });
+            try {
+                const response = await fetch('https://carused-mooo-com.vercel.app/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message, userId })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'Failed to send message');
+                statusDiv.textContent = 'Message sent successfully! We\'ll get back to you soon.';
+                statusDiv.className = 'contact-message success';
+                form.reset();
+            } catch (err) {
+                statusDiv.textContent = 'Error: ' + err.message;
+                statusDiv.className = 'contact-message error';
+            } finally {
+                submitBtn.disabled = false;
+            }
         });
     </script>
 </body>
-</html>
+    </html>
