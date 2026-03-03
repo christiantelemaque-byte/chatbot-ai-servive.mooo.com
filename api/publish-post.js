@@ -18,14 +18,18 @@ export default async function handler(req, res) {
     // Get client IP from headers
     const ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim();
     
-    // Geolocation using free ip-api.com (no API key required for non-commercial use)
-    let location = { city: null, country: null };
+    // Geolocation using free ip-api.com (fields: city, region, country)
+    let location = { city: null, region: null, country: null };
     if (ip && ip !== '::1' && ip !== '127.0.0.1') {
       try {
-        const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=city,country`);
+        const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=city,region,country`);
         const geoData = await geoRes.json();
-        if (geoData && geoData.city && geoData.country) {
-          location = { city: geoData.city, country: geoData.country };
+        if (geoData && geoData.city && geoData.region && geoData.country) {
+          location = { 
+            city: geoData.city, 
+            region: geoData.region, 
+            country: geoData.country 
+          };
         }
       } catch (geoErr) {
         console.error('Geolocation error:', geoErr);
@@ -52,4 +56,4 @@ export default async function handler(req, res) {
     console.error('Save error:', error);
     res.status(500).json({ error: error.message });
   }
-}
+      }
