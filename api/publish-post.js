@@ -1,3 +1,4 @@
+// api/publish-post.js
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
@@ -14,6 +15,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Get client IP from headers
+    const ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim();
+    
+    // Geolocation using free ip-api.com (no API key required for non-commercial use)
+    let location = { city: null, country: null };
+    if (ip && ip !== '::1' && ip !== '127.0.0.1') {
+      try {
+        const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=city,country`);
+        const geoData = await geoRes.json();
+        if (geoData && geoData.city && geoData.country) {
+          location = { city: geoData.city, country: geoData.country };
+        }
+      } catch (geoErr) {
+        console.error('Geolocation error:', geoErr);
+      }
+    }
+
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -23,8 +41,10 @@ export default async function handler(req, res) {
       user_id: userId,
       title,
       description,
-      images: imageUrls
+      images: imageUrls,
+      location,
     });
+
     if (error) throw error;
 
     res.status(200).json({ success: true });
