@@ -35,7 +35,6 @@
             .menu-toggle { display: none !important; }
             .nav-links { display: flex !important; position: static !important; box-shadow: none !important; }
         }
-        /* Responsive modal styles */
         .modal {
             display: none !important;
             position: fixed !important;
@@ -179,7 +178,7 @@
                     <textarea id="description" rows="6" required placeholder="Describe yourself, services, availability..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--light-pink); border-radius: 8px; font-size: 1rem;"></textarea>
                 </div>
 
-                <!-- Image upload with compression (message removed) -->
+                <!-- Image upload with compression -->
                 <div class="form-group">
                     <label for="imageFiles">Photos (up to 5)</label>
                     <input type="file" id="imageFiles" accept="image/*" multiple>
@@ -466,8 +465,12 @@
                     const { data: { user } } = await window.supabase.auth.getUser();
                     if (!user) throw new Error('Not logged in');
 
+                    // Determine if post should be VIP based on subscription type
+                    const subscriptionType = localStorage.getItem('subscription_type') || 'none';
+                    const isVip = (subscriptionType === 'vip');
+
                     progressMessage.textContent = 'Saving your post...';
-                    await savePost(title, description, imageUrls, user.id);
+                    await savePost(title, description, imageUrls, user.id, isVip);
 
                     showMessage('✅ Your listing has been published!', 'success');
                     document.getElementById('postForm').reset();
