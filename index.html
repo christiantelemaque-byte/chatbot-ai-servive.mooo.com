@@ -54,7 +54,7 @@
             }
         }
 
-        /* ===== RESPONSIVE MODAL STYLES ===== */
+        /* Responsive modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -194,7 +194,7 @@
         </div>
     </section>
 
-    <!-- Country Filter Bar (added) -->
+    <!-- Country Filter Bar -->
     <div class="filter-bar" style="margin: 2rem auto; text-align: center; max-width: 800px;">
         <label for="countryFilter" style="font-weight: 600; margin-right: 0.5rem;">Filter by Country:</label>
         <select id="countryFilter" style="padding: 0.5rem 1rem; border-radius: 30px; border: 2px solid var(--light-pink);">
@@ -334,94 +334,6 @@
                     if (!target) return;
                     checkbox.checked = false;
 
-                    if (target.tagName === 'BUTTON' && target.classList.contains('btn-login')) {
-                        e.preventDefault();
-                        if (typeof window.openAuthModal === 'function') {
-                            window.openAuthModal();
-                        } else {
-                            document.getElementById('authModal').style.display = 'block';
-                        }
-                    }
-                });
-            }
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768 && checkbox) checkbox.checked = false;
-            });
-        });
-    </script>
-
-    <!-- Contact modal script -->
-    <script>
-        const modal = document.getElementById('contactModal');
-        const btn = document.getElementById('contactBtn');
-        const closeBtn = document.getElementById('closeModal');
-        const form = document.getElementById('contactForm');
-        const submitBtn = document.getElementById('contactSubmit');
-        const statusDiv = document.getElementById('contactStatus');
-
-        btn.addEventListener('click', () => modal.classList.add('show'));
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('show');
-            form.reset();
-            statusDiv.textContent = '';
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('show');
-                form.reset();
-                statusDiv.textContent = '';
-            }
-        });
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            statusDiv.textContent = 'Sending...';
-            statusDiv.className = 'contact-message';
-            submitBtn.disabled = true;
-            const name = document.getElementById('contactName').value.trim();
-            const email = document.getElementById('contactEmail').value.trim();
-            const message = document.getElementById('contactMessage').value.trim();
-            let userId = null;
-            if (window.supabase) {
-                const { data: { user } } = await window.supabase.auth.getUser();
-                userId = user?.id || null;
-            }
-            try {
-                const response = await fetch('https://carused-mooo-com.vercel.app/api/contact', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, message, userId })
-                });
-                const result = await response.json();
-                if (!response.ok) throw new Error(result.error || 'Failed to send message');
-                statusDiv.textContent = 'Message sent successfully! We\'ll get back to you soon.';
-                statusDiv.className = 'contact-message success';
-                form.reset();
-            } catch (err) {
-                statusDiv.textContent = 'Error: ' + err.message;
-                statusDiv.className = 'contact-message error';
-            } finally {
-                submitBtn.disabled = false;
-            }
-        });
-    </script>
-</body>
-                                                             </html>        const navLinks = document.getElementById('navLinks');
-
-            if (mobileMenu && checkbox) {
-                mobileMenu.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    checkbox.checked = !checkbox.checked;
-                });
-            }
-
-            if (navLinks) {
-                navLinks.addEventListener('click', function(e) {
-                    const target = e.target.closest('a, button');
-                    if (!target) return;
-                    checkbox.checked = false;
-
                     // Only intercept button with class 'btn-login' (the login button)
                     if (target.tagName === 'BUTTON' && target.classList.contains('btn-login')) {
                         e.preventDefault();
@@ -431,8 +343,6 @@
                             document.getElementById('authModal').style.display = 'block';
                         }
                     }
-                    // Other buttons (signup, logout) rely on their onclick attributes
-                    // Anchor links (Dashboard, Profile) navigate normally
                 });
             }
 
