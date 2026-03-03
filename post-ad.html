@@ -287,7 +287,6 @@
             });
         }
 
-        // Updated savePost function to accept isVip
         async function savePost(title, description, imageUrls, userId, isVip) {
             const response = await fetch(SAVE_POST_URL, {
                 method: 'POST',
@@ -345,9 +344,14 @@
                     const { data: { user } } = await window.supabase.auth.getUser();
                     if (!user) throw new Error('Not logged in');
 
-                    // Determine VIP status from localStorage
-                    const subscriptionType = localStorage.getItem('subscription_type') || 'none';
-                    const isVip = (subscriptionType === 'vip');
+                    // Get current subscription type directly from database
+                    const { data: profile, error: profileError } = await window.supabase
+                        .from('profiles')
+                        .select('subscription_type')
+                        .eq('id', user.id)
+                        .single();
+                    if (profileError) throw profileError;
+                    const isVip = (profile.subscription_type === 'vip');
 
                     progressMessage.textContent = 'Saving your post...';
                     await savePost(title, description, imageUrls, user.id, isVip);
@@ -452,4 +456,4 @@
         });
     </script>
 </body>
-  </html>
+    </html>
