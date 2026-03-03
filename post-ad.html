@@ -101,7 +101,6 @@
             border-radius: 8px;
             padding: 1rem;
             margin-bottom: 1rem;
-            text-align: center;
             display: none;
         }
         .upload-progress {
@@ -180,11 +179,10 @@
                     <textarea id="description" rows="6" required placeholder="Describe yourself, services, availability..." style="width: 100%; padding: 12px 15px; border: 2px solid var(--light-pink); border-radius: 8px; font-size: 1rem;"></textarea>
                 </div>
 
-                <!-- Image upload with compression -->
+                <!-- Image upload with compression (message removed) -->
                 <div class="form-group">
                     <label for="imageFiles">Photos (up to 5)</label>
                     <input type="file" id="imageFiles" accept="image/*" multiple>
-                    <small style="display: block; margin-top: 5px; color: #666;">Images will be compressed (max 1200px, ~80% quality) then uploaded to GitHub via Picser.</small>
                     <div id="imagePreview" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
                 </div>
 
@@ -252,18 +250,9 @@
             <span class="close" id="closeModal">&times;</span>
             <h2 style="color: var(--dark-pink); margin-bottom: 1.5rem;">Contact Us</h2>
             <form id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label for="contactName">Full Name *</label>
-                    <input type="text" id="contactName" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactEmail">Email *</label>
-                    <input type="email" id="contactEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactMessage">Message *</label>
-                    <textarea id="contactMessage" required></textarea>
-                </div>
+                <div class="form-group"><label for="contactName">Full Name *</label><input type="text" id="contactName" required></div>
+                <div class="form-group"><label for="contactEmail">Email *</label><input type="email" id="contactEmail" required></div>
+                <div class="form-group"><label for="contactMessage">Message *</label><textarea id="contactMessage" required></textarea></div>
                 <button type="submit" id="contactSubmit">Send Message</button>
                 <div id="contactStatus" class="contact-message"></div>
             </form>
@@ -591,4 +580,4 @@
         });
     </script>
 </body>
-  </html>
+    </html>
