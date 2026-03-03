@@ -1,15 +1,28 @@
-// js/app.js – Public‑friendly with detailed error logging
+// js/app.js – with country filter
 console.log('✅ app.js loaded');
 
 class EscortDirectory {
     constructor() {
         this.fallbackPosts = JSON.parse(localStorage.getItem('luxePosts')) || [];
+        this.allPosts = [];               // store all fetched posts
+        this.currentCountryFilter = '';   // current filter
         document.addEventListener('DOMContentLoaded', () => this.init());
     }
 
     init() {
         this.loadListings();
+        this.setupFilterListener();
         this.setupEventListeners();
+    }
+
+    setupFilterListener() {
+        const filterSelect = document.getElementById('countryFilter');
+        if (filterSelect) {
+            filterSelect.addEventListener('change', (e) => {
+                this.currentCountryFilter = e.target.value;
+                this.displayFilteredPosts();
+            });
+        }
     }
 
     async loadListings() {
@@ -20,33 +33,30 @@ class EscortDirectory {
         if (vipContainer) vipContainer.innerHTML = '<div class="loading">Loading VIP listings...</div>';
         if (regularContainer) regularContainer.innerHTML = '<div class="loading">Loading regular listings...</div>';
 
-        // Try to get from cache first (if cache functions exist)
-        let cachedPosts = null;
-        if (typeof getPublicPosts === 'function') {
-            cachedPosts = getPublicPosts();
-        }
+        // Try cache first
+        const cachedPosts = (typeof getPublicPosts === 'function') ? getPublicPosts() : null;
         if (cachedPosts && cachedPosts.length > 0) {
-            this.displayPosts(cachedPosts, vipContainer, regularContainer);
-            // Refresh in background
-            this.refreshListings(vipContainer, regularContainer);
+            this.allPosts = cachedPosts;
+            this.populateCountryFilter();
+            this.displayFilteredPosts();
+            this.refreshListings(); // background refresh
         } else {
-            await this.refreshListings(vipContainer, regularContainer);
+            await this.refreshListings();
         }
     }
 
-    async refreshListings(vipContainer, regularContainer) {
+    async refreshListings() {
         try {
             if (!window.supabase || typeof window.supabase.from !== 'function') {
                 console.warn('Supabase not available, using fallback');
-                this.displayFallback(vipContainer, regularContainer);
+                this.displayFallback();
                 return;
             }
 
-            // First attempt: try with join (requires public read on profiles)
+            // Attempt 1: with join (requires proper RLS)
             let posts = null;
             let error = null;
             try {
-                console.log('Attempting join query...');
                 const { data, error: err } = await window.supabase
                     .from('posts')
                     .select('*, profiles(username)')
@@ -54,15 +64,12 @@ class EscortDirectory {
                     .order('created_at', { ascending: false });
                 posts = data;
                 error = err;
-                if (error) console.error('Join query error:', error);
-                else console.log('Join query succeeded, posts:', posts?.length);
             } catch (joinErr) {
-                console.warn('Join query threw exception:', joinErr);
+                console.warn('Join query failed, trying without join:', joinErr);
             }
 
-            // If join failed, try simple query (only posts table)
             if (error || !posts) {
-                console.log('Attempting simple query...');
+                console.warn('Falling back to basic posts query');
                 const { data, error: err } = await window.supabase
                     .from('posts')
                     .select('*')
@@ -70,30 +77,54 @@ class EscortDirectory {
                     .order('created_at', { ascending: false });
                 posts = data;
                 error = err;
-                if (error) console.error('Simple query error:', error);
-                else console.log('Simple query succeeded, posts:', posts?.length);
             }
 
             if (error) {
-                console.error('All queries failed, using fallback:', error);
-                this.displayFallback(vipContainer, regularContainer);
+                console.error('Supabase error:', error);
+                this.displayFallback();
                 return;
             }
 
             if (!posts || posts.length === 0) {
-                this.displayNoPosts(vipContainer, regularContainer);
+                this.displayNoPosts();
                 return;
             }
 
-            // Cache the fresh data
-            if (typeof setPublicPosts === 'function') {
-                setPublicPosts(posts);
-            }
-            this.displayPosts(posts, vipContainer, regularContainer);
+            this.allPosts = posts;
+            if (typeof setPublicPosts === 'function') setPublicPosts(posts);
+            this.populateCountryFilter();
+            this.displayFilteredPosts();
         } catch (err) {
             console.error('Unexpected error in refreshListings:', err);
-            this.displayFallback(vipContainer, regularContainer);
+            this.displayFallback();
         }
+    }
+
+    populateCountryFilter() {
+        const select = document.getElementById('countryFilter');
+        if (!select) return;
+        // Extract unique countries
+        const countries = [...new Set(this.allPosts
+            .map(p => p.location?.country)
+            .filter(c => c && c.trim() !== '')
+        )].sort();
+        select.innerHTML = '<option value="">All Countries</option>';
+        countries.forEach(country => {
+            const option = document.createElement('option');
+            option.value = country;
+            option.textContent = country;
+            select.appendChild(option);
+        });
+    }
+
+    displayFilteredPosts() {
+        const filtered = this.currentCountryFilter
+            ? this.allPosts.filter(p => p.location?.country === this.currentCountryFilter)
+            : this.allPosts;
+
+        const vipContainer = document.getElementById('vip-listings');
+        const regularContainer = document.getElementById('regular-listings');
+        this.displayPosts(filtered, vipContainer, regularContainer);
     }
 
     displayPosts(posts, vipContainer, regularContainer) {
@@ -119,7 +150,9 @@ class EscortDirectory {
         }
     }
 
-    displayFallback(vipContainer, regularContainer) {
+    displayFallback() {
+        const vipContainer = document.getElementById('vip-listings');
+        const regularContainer = document.getElementById('regular-listings');
         const vipFallback = this.fallbackPosts.filter(p => p.subscriptionType === 'vip' && p.status === 'active');
         const regularFallback = this.fallbackPosts.filter(p => p.subscriptionType === 'regular' && p.status === 'active');
 
@@ -142,7 +175,9 @@ class EscortDirectory {
         }
     }
 
-    displayNoPosts(vipContainer, regularContainer) {
+    displayNoPosts() {
+        const vipContainer = document.getElementById('vip-listings');
+        const regularContainer = document.getElementById('regular-listings');
         if (vipContainer) vipContainer.innerHTML = '<div class="no-listings">No VIP listings yet</div>';
         if (regularContainer) regularContainer.innerHTML = '<div class="no-listings">No regular listings yet</div>';
     }
@@ -159,8 +194,11 @@ class EscortDirectory {
         const desc = post.description || 'No description provided.';
         const imageUrl = (post.images && post.images[0]) ? post.images[0] : 'images/default-avatar.jpg';
         const date = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : 'Recently';
-        // If we have profiles.username from join, use it; else fallback
         const username = post.profiles?.username || post.username || (post.user_id ? 'User' : 'Anonymous');
+
+        const locationHtml = post.location?.country
+            ? `<span><i class="fas fa-map-marker-alt"></i> ${this.escapeHtml(post.location.country)}</span>`
+            : '';
 
         card.innerHTML = `
             ${post.is_vip ? '<div class="vip-badge"><i class="fas fa-crown"></i> VIP</div>' : ''}
@@ -171,6 +209,7 @@ class EscortDirectory {
                 <div class="listing-meta">
                     <span><i class="fas fa-user"></i> ${this.escapeHtml(username)}</span>
                     <span><i class="fas fa-clock"></i> ${date}</span>
+                    ${locationHtml}
                 </div>
             </div>
         `;
