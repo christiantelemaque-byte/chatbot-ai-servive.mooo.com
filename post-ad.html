@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Compression library -->
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <style>
         * { box-sizing: border-box; }
@@ -344,7 +343,7 @@
                     const { data: { user } } = await window.supabase.auth.getUser();
                     if (!user) throw new Error('Not logged in');
 
-                    // Get current subscription type directly from database
+                    // Get current subscription type directly from database (live)
                     const { data: profile, error: profileError } = await window.supabase
                         .from('profiles')
                         .select('subscription_type')
