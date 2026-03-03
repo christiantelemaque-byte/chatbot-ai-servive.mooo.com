@@ -7,25 +7,12 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Universal box-sizing and responsive modal styles (same as other pages) -->
     <style>
         * { box-sizing: border-box; }
         html, body { max-width: 100%; overflow-x: hidden; }
         #menu-toggle-checkbox { display: none !important; }
         @media (max-width: 768px) {
-            .nav-links {
-                display: none !important;
-                flex-direction: column !important;
-                width: 100% !important;
-                background: white !important;
-                position: absolute !important;
-                top: 100% !important;
-                left: 0 !important;
-                right: 0 !important;
-                padding: 1rem 0 !important;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-                z-index: 1000 !important;
-            }
+            .nav-links { display: none !important; flex-direction: column !important; width: 100% !important; background: white !important; position: absolute !important; top: 100% !important; left: 0 !important; right: 0 !important; padding: 1rem 0 !important; box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; z-index: 1000 !important; }
             #menu-toggle-checkbox:checked ~ .nav-links { display: flex !important; }
             .menu-toggle { display: block !important; font-size: 1.8rem; color: var(--primary-pink); cursor: pointer; padding: 0.5rem; }
         }
@@ -33,233 +20,50 @@
             .menu-toggle { display: none !important; }
             .nav-links { display: flex !important; position: static !important; box-shadow: none !important; }
         }
-        /* Responsive modal styles */
-        .modal {
-            display: none !important;
-            position: fixed !important;
-            z-index: 2000 !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            background-color: rgba(0,0,0,0.5) !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 1rem !important;
-            box-sizing: border-box !important;
-        }
+        .modal { display: none !important; position: fixed !important; z-index: 2000 !important; left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; background-color: rgba(0,0,0,0.5) !important; align-items: center !important; justify-content: center !important; padding: 1rem !important; box-sizing: border-box !important; }
         .modal.show { display: flex !important; }
-        .modal-content {
-            background: white !important;
-            padding: 2rem !important;
-            border-radius: 15px !important;
-            max-width: 500px !important;
-            width: 100% !important;
-            max-height: 90vh !important;
-            overflow-y: auto !important;
-            position: relative !important;
-            box-sizing: border-box !important;
-            margin: auto !important;
-        }
+        .modal-content { background: white !important; padding: 2rem !important; border-radius: 15px !important; max-width: 500px !important; width: 100% !important; max-height: 90vh !important; overflow-y: auto !important; position: relative !important; box-sizing: border-box !important; margin: auto !important; }
         @media (max-width: 480px) { .modal-content { padding: 1.5rem !important; } }
         .close { position: absolute !important; right: 15px !important; top: 10px !important; font-size: 28px !important; cursor: pointer !important; color: var(--primary-pink) !important; line-height: 1 !important; }
         .contact-form .form-group { margin-bottom: 1.5rem !important; }
         .contact-form label { display: block !important; margin-bottom: 0.5rem !important; font-weight: 500 !important; }
-        .contact-form input, .contact-form textarea {
-            width: 100% !important;
-            padding: 0.8rem !important;
-            border: 2px solid var(--light-pink) !important;
-            border-radius: 8px !important;
-            font-size: 1rem !important;
-            box-sizing: border-box !important;
-        }
+        .contact-form input, .contact-form textarea { width: 100% !important; padding: 0.8rem !important; border: 2px solid var(--light-pink) !important; border-radius: 8px !important; font-size: 1rem !important; box-sizing: border-box !important; }
         .contact-form textarea { min-height: 100px !important; resize: vertical !important; }
-        .contact-form button {
-            width: 100% !important;
-            padding: 1rem !important;
-            background: linear-gradient(135deg, var(--primary-pink), var(--dark-pink)) !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 30px !important;
-            font-weight: 600 !important;
-            cursor: pointer !important;
-            transition: transform 0.3s !important;
-        }
+        .contact-form button { width: 100% !important; padding: 1rem !important; background: linear-gradient(135deg, var(--primary-pink), var(--dark-pink)) !important; color: white !important; border: none !important; border-radius: 30px !important; font-weight: 600 !important; cursor: pointer !important; transition: transform 0.3s !important; }
         .contact-form button:hover { transform: translateY(-2px) !important; }
         .contact-form button:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
         .contact-message { margin-top: 1rem !important; text-align: center !important; font-size: 0.9rem !important; word-wrap: break-word !important; }
         .contact-message.success { color: #28a745 !important; }
         .contact-message.error { color: #dc3545 !important; }
 
-        /* Post detail styles (original) */
-        .post-detail-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-        .post-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        .post-images {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-        }
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4/3;
-            overflow: hidden;
-            border-radius: 10px;
-            touch-action: pan-y;
-        }
-        .carousel-track {
-            display: flex;
-            transition: transform 0.3s ease;
-            height: 100%;
-        }
-        .carousel-slide {
-            flex: 0 0 100%;
-            height: 100%;
-        }
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            cursor: pointer;
-        }
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.8);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--primary-pink);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 10;
-            transition: background 0.3s;
-        }
+        .post-detail-container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+        .post-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        .post-images { background: #f8f9fa; padding: 1.5rem; display: flex; flex-direction: column; }
+        .carousel-container { position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; border-radius: 10px; touch-action: pan-y; }
+        .carousel-track { display: flex; transition: transform 0.3s ease; height: 100%; }
+        .carousel-slide { flex: 0 0 100%; height: 100%; }
+        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; color: var(--primary-pink); box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; transition: background 0.3s; }
         .carousel-btn:hover { background: white; }
         .carousel-btn.prev { left: 10px; }
         .carousel-btn.next { right: 10px; }
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 1rem;
-        }
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ccc;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+        .carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1rem; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; cursor: pointer; transition: background 0.3s; }
         .dot.active { background: var(--primary-pink); }
         .post-info { padding: 2rem; }
-        .post-title {
-            font-size: 2.2rem;
-            color: var(--dark-pink);
-            margin-bottom: 0.5rem;
-        }
-        .post-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-        }
-        .vip-badge-detail {
-            display: inline-block;
-            background: var(--gold);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        .post-description {
-            line-height: 1.8;
-            color: #333;
-            white-space: pre-wrap;
-        }
-        .read-more-btn {
-            background: none;
-            border: none;
-            color: var(--primary-pink);
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            padding: 0;
-            font-size: 0.95rem;
-        }
+        .post-title { font-size: 2.2rem; color: var(--dark-pink); margin-bottom: 0.5rem; }
+        .post-meta { display: flex; flex-wrap: wrap; gap: 1.5rem; color: #666; margin-bottom: 1.5rem; font-size: 0.95rem; }
+        .vip-badge-detail { display: inline-block; background: var(--gold); color: white; padding: 0.3rem 1rem; border-radius: 30px; font-weight: 600; font-size: 0.9rem; }
+        .post-description { line-height: 1.8; color: #333; white-space: pre-wrap; }
+        .read-more-btn { background: none; border: none; color: var(--primary-pink); font-weight: 600; cursor: pointer; margin-top: 0.5rem; padding: 0; font-size: 0.95rem; }
         .read-more-btn:hover { text-decoration: underline; }
-        .btn-back {
-            display: inline-block;
-            margin-top: 2rem;
-            background: transparent;
-            color: var(--primary-pink);
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-            text-decoration: none;
-            border: 2px solid var(--primary-pink);
-            font-weight: 600;
-            transition: all 0.3s;
-        }
+        .btn-back { display: inline-block; margin-top: 2rem; background: transparent; color: var(--primary-pink); padding: 0.6rem 1.2rem; border-radius: 30px; text-decoration: none; border: 2px solid var(--primary-pink); font-weight: 600; transition: all 0.3s; }
         .btn-back:hover { background: var(--primary-pink); color: white; }
-        .loading, .error {
-            text-align: center;
-            padding: 2rem;
-            color: var(--primary-pink);
-        }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            border-radius: 8px;
-            margin: 2rem;
-        }
-        @media (max-width: 768px) {
-            .post-layout { grid-template-columns: 1fr; }
-            .post-images { padding: 1rem; }
-            .post-info { padding: 1.5rem; }
-            .post-title { font-size: 1.8rem; }
-        }
-        .lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            cursor: pointer;
-        }
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-        }
+        .loading, .error { text-align: center; padding: 2rem; color: var(--primary-pink); }
+        .error { background: #f8d7da; color: #721c24; border-radius: 8px; margin: 2rem; }
+        @media (max-width: 768px) { .post-layout { grid-template-columns: 1fr; } .post-images { padding: 1rem; } .post-info { padding: 1.5rem; } .post-title { font-size: 1.8rem; } }
+        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 2000; cursor: pointer; }
+        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; }
     </style>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="js/cache.js"></script>
@@ -272,7 +76,6 @@
     </script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="logo"><i class="fas fa-gem"></i><span>LuxeCompanions</span></div>
@@ -282,12 +85,10 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="post-detail-container" id="postContainer">
         <div class="loading">Loading post...</div>
     </main>
 
-    <!-- Footer with contact button -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
@@ -314,7 +115,6 @@
         </div>
     </footer>
 
-    <!-- Auth Modal -->
     <div id="authModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('authModal').style.display='none'">&times;</span>
@@ -322,24 +122,14 @@
         </div>
     </div>
 
-    <!-- Contact Modal -->
     <div id="contactModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
             <h2 style="color: var(--dark-pink); margin-bottom: 1.5rem;">Contact Us</h2>
             <form id="contactForm" class="contact-form">
-                <div class="form-group">
-                    <label for="contactName">Full Name *</label>
-                    <input type="text" id="contactName" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactEmail">Email *</label>
-                    <input type="email" id="contactEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactMessage">Message *</label>
-                    <textarea id="contactMessage" required></textarea>
-                </div>
+                <div class="form-group"><label for="contactName">Full Name *</label><input type="text" id="contactName" required></div>
+                <div class="form-group"><label for="contactEmail">Email *</label><input type="email" id="contactEmail" required></div>
+                <div class="form-group"><label for="contactMessage">Message *</label><textarea id="contactMessage" required></textarea></div>
                 <button type="submit" id="contactSubmit">Send Message</button>
                 <div id="contactStatus" class="contact-message"></div>
             </form>
@@ -349,11 +139,8 @@
     <script src="js/auth.js"></script>
     <script src="js/app.js"></script>
     <script>
-        // ========== CAROUSEL & LIGHTBOX (from original) ==========
-        let currentImageIndex = 0;
-        let imageUrls = [];
-        let carouselTrack, dotsContainer;
-
+        // ========== CAROUSEL & LIGHTBOX ==========
+        let currentImageIndex = 0, imageUrls = [], carouselTrack, dotsContainer;
         window.openLightbox = function(imgSrc) {
             const lightbox = document.createElement('div');
             lightbox.className = 'lightbox';
@@ -361,14 +148,12 @@
             lightbox.onclick = function() { this.remove(); };
             document.body.appendChild(lightbox);
         };
-
         function initCarousel(images) {
             imageUrls = images || [];
             currentImageIndex = 0;
             carouselTrack = document.querySelector('.carousel-track');
             dotsContainer = document.querySelector('.carousel-dots');
             if (!carouselTrack || imageUrls.length === 0) return;
-
             carouselTrack.innerHTML = '';
             imageUrls.forEach((url, index) => {
                 const slide = document.createElement('div');
@@ -376,7 +161,6 @@
                 slide.innerHTML = `<img src="${url}" alt="Image ${index+1}" onclick="openLightbox('${url}')">`;
                 carouselTrack.appendChild(slide);
             });
-
             dotsContainer.innerHTML = '';
             imageUrls.forEach((_, index) => {
                 const dot = document.createElement('span');
@@ -384,55 +168,38 @@
                 dot.addEventListener('click', () => goToSlide(index));
                 dotsContainer.appendChild(dot);
             });
-
             updateCarousel();
         }
-
         function updateCarousel() {
             if (!carouselTrack || imageUrls.length === 0) return;
             const slideWidth = carouselTrack.children[0]?.offsetWidth || 0;
             carouselTrack.style.transform = `translateX(-${currentImageIndex * slideWidth}px)`;
             const dots = document.querySelectorAll('.dot');
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentImageIndex);
-            });
+            dots.forEach((dot, index) => dot.classList.toggle('active', index === currentImageIndex));
         }
-
         function goToSlide(index) {
             if (index < 0) index = 0;
             if (index >= imageUrls.length) index = imageUrls.length - 1;
             currentImageIndex = index;
             updateCarousel();
         }
-
         window.nextImage = function() { goToSlide(currentImageIndex + 1); };
         window.prevImage = function() { goToSlide(currentImageIndex - 1); };
 
         // Touch handling
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchMoved = false;
-        function handleTouchStart(e) {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            touchMoved = false;
-        }
+        let touchStartX = 0, touchStartY = 0, touchMoved = false;
+        function handleTouchStart(e) { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; touchMoved = false; }
         function handleTouchMove(e) {
             if (!touchMoved) {
                 const dx = e.touches[0].clientX - touchStartX;
                 const dy = e.touches[0].clientY - touchStartY;
-                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
-                    e.preventDefault();
-                    touchMoved = true;
-                }
+                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) { e.preventDefault(); touchMoved = true; }
             }
         }
         function handleTouchEnd(e) {
             if (!touchMoved) return;
             const diffX = touchStartX - e.changedTouches[0].clientX;
-            if (Math.abs(diffX) > 50) {
-                if (diffX > 0) nextImage(); else prevImage();
-            }
+            if (Math.abs(diffX) > 50) { if (diffX > 0) nextImage(); else prevImage(); }
         }
 
         window.toggleDescription = function() {
@@ -463,28 +230,18 @@
             const postId = urlParams.get('id');
             const container = document.getElementById('postContainer');
 
-            if (!postId) {
-                container.innerHTML = '<div class="error">No post ID provided.</div>';
-                return;
-            }
-
-            if (!window.supabase) {
-                container.innerHTML = '<div class="error">Supabase client not loaded.</div>';
-                return;
-            }
+            if (!postId) { container.innerHTML = '<div class="error">No post ID provided.</div>'; return; }
+            if (!window.supabase) { container.innerHTML = '<div class="error">Supabase client not loaded.</div>'; return; }
 
             try {
-                // Fetch post
                 const { data: post, error: postError } = await window.supabase
                     .from('posts')
                     .select('*')
                     .eq('id', postId)
                     .single();
-
                 if (postError) throw postError;
                 if (!post) throw new Error('Post not found');
 
-                // Fetch username separately
                 let username = 'Anonymous';
                 if (post.user_id) {
                     const { data: profile, error: profileError } = await window.supabase
@@ -502,7 +259,11 @@
                 const shortDesc = description.length > 200 ? description.substring(0, 200) + '…' : description;
                 const isLong = description.length > 200;
 
-                // Build HTML
+                // Location display
+                const locationHtml = post.location?.country ? `
+                    <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(post.location.city ? post.location.city + ', ' : '')}${escapeHtml(post.location.country)}</span>
+                ` : '';
+
                 let html = `
                     <div class="post-layout">
                         <div class="post-images">
@@ -521,6 +282,7 @@
                                 <span><i class="fas fa-user"></i> ${escapeHtml(username)}</span>
                                 <span><i class="fas fa-calendar"></i> ${dateStr}</span>
                                 ${post.is_vip ? '<span class="vip-badge-detail"><i class="fas fa-crown"></i> VIP</span>' : ''}
+                                ${locationHtml}
                             </div>
                             <div class="post-description">
                                 <div id="descriptionPreview" style="display: ${isLong ? 'block' : 'none'};">${escapeHtml(shortDesc).replace(/\n/g, '<br>')}</div>
@@ -531,21 +293,15 @@
                     </div>
                     <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Home</a>
                 `;
-
                 container.innerHTML = html;
 
-                // Initialize carousel
                 initCarousel(post.images || []);
-
-                // Attach touch handlers
                 const carousel = document.getElementById('carouselContainer');
                 if (carousel) {
                     carousel.addEventListener('touchstart', handleTouchStart, { passive: false });
                     carousel.addEventListener('touchmove', handleTouchMove, { passive: false });
                     carousel.addEventListener('touchend', handleTouchEnd);
                 }
-
-                // Handle window resize
                 window.addEventListener('resize', updateCarousel);
             } catch (err) {
                 console.error('Error loading post:', err);
@@ -553,63 +309,39 @@
             }
         })();
 
-        // Mobile menu and auth handling (same as other pages)
+        // Mobile menu and auth handling
         document.addEventListener('DOMContentLoaded', function() {
             const checkbox = document.getElementById('menu-toggle-checkbox');
             const mobileMenu = document.getElementById('mobileMenu');
             const navLinks = document.getElementById('navLinks');
-
             if (mobileMenu && checkbox) {
-                mobileMenu.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    checkbox.checked = !checkbox.checked;
-                });
+                mobileMenu.addEventListener('click', function(e) { e.preventDefault(); checkbox.checked = !checkbox.checked; });
             }
-
             if (navLinks) {
                 navLinks.addEventListener('click', function(e) {
                     const target = e.target.closest('a, button');
                     if (!target) return;
                     checkbox.checked = false;
-
                     if (target.tagName === 'BUTTON' && target.classList.contains('btn-login')) {
                         e.preventDefault();
-                        if (typeof window.openAuthModal === 'function') {
-                            window.openAuthModal();
-                        } else {
-                            document.getElementById('authModal').style.display = 'block';
-                        }
+                        if (typeof window.openAuthModal === 'function') window.openAuthModal();
+                        else document.getElementById('authModal').style.display = 'block';
                     }
                 });
             }
-
-            window.addEventListener('resize', function() {
-                if (window.innerWidth > 768 && checkbox) checkbox.checked = false;
-            });
+            window.addEventListener('resize', function() { if (window.innerWidth > 768 && checkbox) checkbox.checked = false; });
         });
 
-        // Contact modal script (same as other pages)
+        // Contact modal script
         const modal = document.getElementById('contactModal');
         const btn = document.getElementById('contactBtn');
         const closeBtn = document.getElementById('closeModal');
         const form = document.getElementById('contactForm');
         const submitBtn = document.getElementById('contactSubmit');
         const statusDiv = document.getElementById('contactStatus');
-
         btn.addEventListener('click', () => modal.classList.add('show'));
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('show');
-            form.reset();
-            statusDiv.textContent = '';
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('show');
-                form.reset();
-                statusDiv.textContent = '';
-            }
-        });
-
+        closeBtn.addEventListener('click', () => { modal.classList.remove('show'); form.reset(); statusDiv.textContent = ''; });
+        window.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.remove('show'); form.reset(); statusDiv.textContent = ''; } });
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             statusDiv.textContent = 'Sending...';
