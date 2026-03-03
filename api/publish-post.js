@@ -10,26 +10,20 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { title, description, imageUrls, userId } = req.body;
+    const { title, description, imageUrls, userId, isVip } = req.body;
     if (!title || !description || !Array.isArray(imageUrls) || !userId) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Get client IP from headers
+    // Optional geolocation (ip‑based)
     const ip = (req.headers['x-forwarded-for'] || req.connection.remoteAddress || '').split(',')[0].trim();
-    
-    // Geolocation using free ip-api.com (fields: city, region, country)
     let location = { city: null, region: null, country: null };
     if (ip && ip !== '::1' && ip !== '127.0.0.1') {
       try {
         const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=city,region,country`);
         const geoData = await geoRes.json();
         if (geoData && geoData.city && geoData.region && geoData.country) {
-          location = { 
-            city: geoData.city, 
-            region: geoData.region, 
-            country: geoData.country 
-          };
+          location = { city: geoData.city, region: geoData.region, country: geoData.country };
         }
       } catch (geoErr) {
         console.error('Geolocation error:', geoErr);
@@ -46,6 +40,7 @@ export default async function handler(req, res) {
       title,
       description,
       images: imageUrls,
+      is_vip: isVip ? true : false, // ensure boolean
       location,
     });
 
@@ -56,4 +51,4 @@ export default async function handler(req, res) {
     console.error('Save error:', error);
     res.status(500).json({ error: error.message });
   }
-      }
+            }
