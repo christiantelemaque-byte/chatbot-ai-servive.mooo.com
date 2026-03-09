@@ -10,6 +10,7 @@
     <!-- Compression library -->
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     <style>
+        /* (same styles as before) */
         * { box-sizing: border-box; }
         html, body { max-width: 100%; overflow-x: hidden; }
         #menu-toggle-checkbox { display: none !important; }
@@ -55,43 +56,13 @@
         .contact-message.success { color: #28a745 !important; }
         .contact-message.error { color: #dc3545 !important; }
 
-        .page-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #dc3545;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        .upload-progress {
-            margin-top: 1rem;
-            display: none;
-        }
-        .upload-progress p {
-            margin-bottom: 0.5rem;
-        }
-        progress {
-            width: 100%;
-            height: 20px;
-        }
-        .auth-message {
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 8px;
-            display: none;
-            text-align: center;
-        }
-        .auth-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #28a745;
-        }
-        .auth-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #dc3545;
-        }
+        .page-error { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; display: none; }
+        .upload-progress { margin-top: 1rem; display: none; }
+        .upload-progress p { margin-bottom: 0.5rem; }
+        progress { width: 100%; height: 20px; }
+        .auth-message { padding: 15px; margin: 15px 0; border-radius: 8px; display: none; text-align: center; }
+        .auth-message.success { background: #d4edda; color: #155724; border: 2px solid #28a745; }
+        .auth-message.error { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; }
         .existing-images {
             display: flex;
             flex-wrap: wrap;
@@ -138,7 +109,6 @@
     </script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="logo"><i class="fas fa-gem"></i><span>LuxeCompanions</span></div>
@@ -148,7 +118,6 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main style="padding: 2rem 1.5rem; max-width: 800px; margin: 0 auto;">
         <div style="background: white; border-radius: 15px; padding: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
             <h1 style="font-size: 2rem; margin-bottom: 1.5rem; color: var(--dark-pink);">
@@ -212,9 +181,9 @@
         </div>
     </main>
 
-    <!-- Footer with contact button -->
-    <footer>...</footer> (same as before)
-    <!-- Auth and Contact modals – same as previous pages -->
+    <footer>...</footer> <!-- same footer as before -->
+    <div id="authModal" class="modal">...</div>
+    <div id="contactModal" class="modal">...</div>
 
     <script src="js/auth.js"></script>
     <script src="js/app.js"></script>
@@ -223,7 +192,6 @@
         const UPLOAD_IMAGE_URL = 'https://carused-mooo-com.vercel.app/api/upload-image';
         const UPDATE_POST_URL = 'https://carused-mooo-com.vercel.app/api/update-post';
 
-        // Helper to extract file path from GitHub URL (same as delete-post)
         function extractFilePathFromUrl(url) {
             try {
                 const urlObj = new URL(url);
@@ -244,7 +212,6 @@
             }
         }
 
-        // Delete a single image from GitHub (reuses logic from delete-post)
         async function deleteImageFromGitHub(url) {
             const filePath = extractFilePathFromUrl(url);
             if (!filePath) return false;
@@ -277,14 +244,12 @@
             return false;
         }
 
-        // ---------- Helper functions ----------
         function showPageError(msg) {
             const el = document.getElementById('pageError');
             el.textContent = msg;
             el.style.display = 'block';
         }
 
-        // Subscription check (uses localStorage + Supabase fallback)
         async function hasActiveSubscription() {
             try {
                 const expiry = localStorage.getItem('subscription_expires_at');
@@ -315,7 +280,6 @@
             const statusDiv = document.getElementById('subscriptionStatus');
             const warningDiv = document.getElementById('subscriptionWarning');
             const submitBtn = document.getElementById('submitBtn');
-
             const active = await hasActiveSubscription();
             if (active) {
                 statusDiv.innerHTML = '<span style="color: #28a745; font-weight:600;"><i class="fas fa-check-circle"></i> Active subscription</span>';
@@ -329,7 +293,6 @@
             }
         }
 
-        // Preview selected images
         document.getElementById('imageFiles').addEventListener('change', function(e) {
             const preview = document.getElementById('imagePreview');
             preview.innerHTML = '';
@@ -349,7 +312,6 @@
             });
         });
 
-        // ---------- Image Compression ----------
         async function compressImage(file) {
             const options = {
                 maxSizeMB: 1,
@@ -368,7 +330,6 @@
             }
         }
 
-        // Upload a single image with compression
         async function uploadSingleImage(file) {
             const compressedFile = await compressImage(file);
             const formData = new FormData();
@@ -405,7 +366,6 @@
             });
         }
 
-        // Update post via Vercel function
         async function updatePost(postId, userId, title, description, imageUrls) {
             const response = await fetch(UPDATE_POST_URL, {
                 method: 'POST',
@@ -417,7 +377,6 @@
             return result;
         }
 
-        // ---------- Load Post Data (cache‑first using getUserPosts) ----------
         (async function init() {
             if (!window.supabase) {
                 showPageError('Supabase client not initialized.');
@@ -438,7 +397,7 @@
                 return;
             }
 
-            // Try to get post from cached user posts first
+            // Try to get post from cache first
             let post = null;
             const cachedPosts = getUserPosts();
             if (cachedPosts && cachedPosts.length > 0) {
@@ -446,7 +405,6 @@
             }
 
             if (!post) {
-                // Not in cache, fetch from DB
                 const { data, error: postError } = await window.supabase
                     .from('posts')
                     .select('*')
@@ -464,11 +422,9 @@
                 return;
             }
 
-            // Fill form
             document.getElementById('title').value = post.title || '';
             document.getElementById('description').value = post.description || '';
 
-            // Display existing images
             const currentImagesDiv = document.getElementById('currentImages');
             if (post.images && post.images.length > 0) {
                 post.images.forEach((url, index) => {
@@ -485,19 +441,16 @@
                 currentImagesDiv.innerHTML = '<p>No images currently.</p>';
             }
 
-            // Store original image URLs for later deletion
             window.originalImageUrls = post.images || [];
 
             await updateSubscriptionStatus();
         })();
 
-        // Mark image for removal (client-side only)
         window.markImageForRemoval = function(btn) {
             const container = btn.closest('.existing-image');
             if (container) container.remove();
         };
 
-        // ---------- Form Submission ----------
         document.getElementById('postForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -519,10 +472,8 @@
                 return;
             }
 
-            // Determine final image set
             let finalImageUrls = [...currentImages];
 
-            // If user uploaded new images, they replace everything
             if (newFiles.length > 0) {
                 const progressDiv = document.getElementById('uploadProgress');
                 const progressBar = document.getElementById('progressBar');
@@ -549,7 +500,6 @@
                 }
             }
 
-            // Delete old images that are no longer needed
             if (window.originalImageUrls) {
                 const imagesToDelete = window.originalImageUrls.filter(url => !finalImageUrls.includes(url));
                 for (const url of imagesToDelete) {
@@ -561,17 +511,19 @@
                 }
             }
 
-            // Update post in Supabase
             try {
                 const { data: { user } } = await window.supabase.auth.getUser();
                 if (!user) throw new Error('Not logged in');
 
                 await updatePost(postId, user.id, title, description, finalImageUrls);
 
-                // Clear user posts cache so dashboard fetches fresh data
+                // Clear user posts cache
                 if (typeof clearCache === 'function') {
                     clearCache(CACHE_KEYS.USER_POSTS);
                 }
+                // ✅ Clear public cache so homepage sees the updated post
+                localStorage.removeItem('luxe_public_posts');
+                localStorage.removeItem('luxe_last_fetch');
 
                 showMessage('✅ Your listing has been updated!', 'success');
                 setTimeout(() => window.location.href = 'dashboard.html', 2000);
@@ -618,8 +570,57 @@
             });
         });
 
-        // Contact modal script (same as other pages) – include if needed
-        // (same as before, but we'll keep it short)
+        // Contact modal script (same as other pages)
+        const modal = document.getElementById('contactModal');
+        const btn = document.getElementById('contactBtn');
+        const closeBtn = document.getElementById('closeModal');
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('contactSubmit');
+        const statusDiv = document.getElementById('contactStatus');
+        btn.addEventListener('click', () => modal.classList.add('show'));
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+            form.reset();
+            statusDiv.textContent = '';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                form.reset();
+                statusDiv.textContent = '';
+            }
+        });
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            statusDiv.textContent = 'Sending...';
+            statusDiv.className = 'contact-message';
+            submitBtn.disabled = true;
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const message = document.getElementById('contactMessage').value.trim();
+            let userId = null;
+            if (window.supabase) {
+                const { data: { user } } = await window.supabase.auth.getUser();
+                userId = user?.id || null;
+            }
+            try {
+                const response = await fetch('https://carused-mooo-com.vercel.app/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, message, userId })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'Failed to send message');
+                statusDiv.textContent = 'Message sent successfully! We\'ll get back to you soon.';
+                statusDiv.className = 'contact-message success';
+                form.reset();
+            } catch (err) {
+                statusDiv.textContent = 'Error: ' + err.message;
+                statusDiv.className = 'contact-message error';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
     </script>
 </body>
-  </html>
+                                  </html>
