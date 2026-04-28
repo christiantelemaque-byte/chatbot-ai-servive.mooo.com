@@ -1,188 +1,350 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Owner-Operator Flyer</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #F2F2F2;
-    color: #333;
-    line-height: 1.6;
-    font-size: 16px;
-}
-.header {
-    background: #003366;
-    color: white;
-    padding: 30px 20px;
-    text-align: center;
-}
-.header h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-.header p {
-    font-size: 16px;
-    opacity: 0.9;
-}
-.container {
-    padding: 20px;
-    max-width: 1100px;
-    margin: auto;
-}
-.grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-}
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-}
-.card h3 {
-    margin-bottom: 15px;
-    font-size: 18px;
-}
-.card ul {
-    list-style: none;
-}
-.card ul li {
-    margin-bottom: 10px;
-}
-.icon {
-    margin-right: 8px;
-    color: #003366;
-}
-.section-title {
-    margin: 30px 0 15px;
-    font-weight: 600;
-    font-size: 18px;
-}
-.special, .pricing, .steps {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-.pricing table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.pricing td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-.steps ol {
-    padding-left: 20px;
-}
-button {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    border-radius: 6px;
-    font-size: 16px;
-    margin-top: 15px;
-    cursor: pointer;
-}
-@media(min-width: 768px) {
-    .grid {
-        grid-template-columns: repeat(3, 1fr);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Christian Telemagne – Trucking Virtual Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #eef2f5;
+      padding: 20px;
+    }
+    .flyer {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
+    }
+    /* Header */
+    .header {
+      background-color: #003366;
+      color: white;
+      padding: 40px 30px 30px;
+      text-align: center;
     }
     .header h1 {
-        font-size: 32px;
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
     }
     .header p {
-        font-size: 18px;
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-weight: 500;
     }
-}
-</style>
+    .trucker-badge {
+      display: inline-block;
+      background-color: #ff8c42;
+      color: #003366;
+      border-radius: 40px;
+      padding: 6px 18px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 15px;
+    }
+    /* Services grid */
+    .services {
+      padding: 40px 30px 20px;
+      background: #F9FBFD;
+    }
+    .services h2 {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #003366;
+      margin-bottom: 30px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: 0.2s;
+      border: 1px solid #e6edf4;
+    }
+    .card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #003366;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .card li {
+      margin-bottom: 12px;
+      padding-left: 24px;
+      position: relative;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #1e2a3e;
+    }
+    .card li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    /* Specialized section */
+    .specialized {
+      background: white;
+      margin: 20px 30px 30px;
+      border-radius: 18px;
+      padding: 24px 28px;
+      border: 1px solid #e2eaf1;
+    }
+    .specialized h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #003366;
+      margin-bottom: 15px;
+    }
+    .specialized .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .badge-list span {
+      background: #eef2fa;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    /* Pricing */
+    .pricing {
+      background: #ffffff;
+      margin: 0 30px 20px;
+      border-radius: 18px;
+      padding: 24px 28px;
+      border: 1px solid #e2eaf1;
+      text-align: center;
+    }
+    .pricing h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #003366;
+      margin-bottom: 18px;
+    }
+    .price-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin: 15px 0;
+    }
+    .price-option {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 16px 24px;
+      min-width: 180px;
+    }
+    .price-option .price {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #003366;
+    }
+    .price-option small {
+      font-size: 0.8rem;
+      color: #4b5563;
+    }
+    /* CTA button + extra */
+    .cta-section {
+      background: #003366;
+      color: white;
+      text-align: center;
+      padding: 40px 30px;
+      margin-top: 15px;
+    }
+    .btn-instagram {
+      display: inline-block;
+      background-color: #E4405F;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 14px 35px;
+      border-radius: 50px;
+      text-decoration: none;
+      margin: 12px 0;
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .btn-instagram:hover {
+      background-color: #c13544;
+      transform: scale(1.02);
+    }
+    .btn-email {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: 600;
+      padding: 10px 25px;
+      border-radius: 40px;
+      text-decoration: none;
+      margin: 8px 10px;
+      font-size: 0.9rem;
+    }
+    .cta-section p {
+      margin: 15px 0 5px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    .three-steps {
+      background: #f0f4f9;
+      padding: 30px;
+      margin: 0 0 0;
+    }
+    .steps-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 20px;
+    }
+    .step {
+      background: white;
+      border-radius: 30px;
+      padding: 18px 20px;
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .step-number {
+      background: #4CAF50;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    footer {
+      background-color: #eef2f5;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: #4b5563;
+    }
+    @media (max-width: 680px) {
+      .header h1 { font-size: 1.4rem; }
+      .services { padding: 25px 18px; }
+      .specialized, .pricing { margin: 0 18px 20px; padding: 18px; }
+      .btn-instagram { font-size: 1rem; padding: 12px 25px; }
+    }
+  </style>
 </head>
 <body>
+<div class="flyer">
+  <div class="header">
+    <h1>🚛 Owner‑Operator? Let’s take the paperwork off your dashboard.</h1>
+    <p>Drive the truck, not the desk. Your dedicated back‑office VA.</p>
+    <div class="trucker-badge">📦 Experienced Trucker & Virtual Assistant – I speak IFTA, BOLs, and demurrage</div>
+  </div>
 
-<div class="header">
-    <h1>Owner-Operator? Let’s take the paperwork off your dashboard.</h1>
-    <p>Experienced trucker & Virtual Assistant – I speak IFTA, BOLs, and demurrage.</p>
+  <div class="services">
+    <h2>📋 Services I handle remotely (from my phone & laptop)</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>💰 Cash Flow & Payments</h3>
+        <ul>
+          <li>Create & send invoices (Wave app)</li>
+          <li>Chase late payments – 30/60/90 days follow‑up</li>
+          <li>Track factoring company due dates</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>📂 Compliance & Paperwork</h3>
+        <ul>
+          <li>IFTA fuel tax reports & filing deadlines</li>
+          <li>Scan & file BOLs + rate confirmations</li>
+          <li>Track permits, registrations, insurance certs</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>📞 Dispatch & Daily Ops</h3>
+        <ul>
+          <li>Post trucks on DAT / Truckstop load boards</li>
+          <li>Call brokers for appointment times</li>
+          <li>Build cost‑per‑mile sheets in Google Sheets</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="specialized">
+    <h3>⚙️ Specialized Pro Services</h3>
+    <div class="badge-list">
+      <span>📄 MC Authority paperwork</span>
+      <span>⛽ Fuel receipt audit for savings</span>
+      <span>☁️ Set up cloud storage (Google Drive)</span>
+      <span>📅 Driver file management</span>
+      <span>📬 Email & calendar organisation</span>
+    </div>
+  </div>
+
+  <div class="pricing">
+    <h3>💵 Simple, transparent pricing</h3>
+    <div class="price-row">
+      <div class="price-option">
+        <div class="price">$25‑35</div>
+        <small>per hour / pay as you go</small>
+      </div>
+      <div class="price-option">
+        <div class="price">$500‑800</div>
+        <small>monthly flat pack (≈25h)</small>
+      </div>
+    </div>
+    <p style="margin-top: 10px; font-size:0.85rem;">✅ No long‑term contract – cancel anytime. Only pay for hours used.</p>
+  </div>
+
+  <!-- 3-step process -->
+  <div class="three-steps">
+    <div class="steps-container">
+      <div class="step"><span class="step-number">1</span><br/>📞 15‑min chat about your biggest headache</div>
+      <div class="step"><span class="step-number">2</span><br/>🎁 Free trial – I chase your oldest unpaid invoice</div>
+      <div class="step"><span class="step-number">3</span><br/>🕒 You pick 5‑25h/week, I handle the rest</div>
+    </div>
+  </div>
+
+  <!-- CTA BUTTONS: Instagram direct + email backup -->
+  <div class="cta-section">
+    <a href="https://ig.me/m/christophed666" class="btn-instagram">
+      📱 Message me on Instagram (fast reply)
+    </a>
+    
+
+    <p style="font-size: 0.8rem; margin-top: 18px;">💡 Click Instagram → opens chat instantly (mobile). No typing needed.</p>
+  </div>
+
+  <footer>
+    Christian Telemagne – Trucking Back‑Office VA | Based in Québec | Available across Canada & US
+  </footer>
 </div>
-
-<div class="container">
-
-<div class="grid">
-
-<div class="card">
-    <h3><i class="fa-solid fa-file-invoice-dollar icon"></i>Cash Flow & Payments</h3>
-    <ul>
-        <li>Create & send invoices (Wave app)</li>
-        <li>Chase late payments (30/60/90 days)</li>
-        <li>Track factoring company due dates</li>
-    </ul>
-</div>
-
-<div class="card">
-    <h3><i class="fa-solid fa-gas-pump icon"></i>Compliance & Paperwork</h3>
-    <ul>
-        <li>IFTA fuel tax reports & filing</li>
-        <li>Scan & file BOLs + rate confirmations</li>
-        <li>Track permits, registrations, insurance certs</li>
-    </ul>
-</div>
-
-<div class="card">
-    <h3><i class="fa-solid fa-truck icon"></i>Dispatch & Daily Ops</h3>
-    <ul>
-        <li>Post trucks on DAT / Truckstop load boards</li>
-        <li>Call brokers for appointment times</li>
-        <li>Build cost-per-mile sheets in Google Sheets</li>
-    </ul>
-</div>
-
-</div>
-
-<div class="special">
-    <div class="section-title"><i class="fa-solid fa-star icon"></i>Specialized Pro Services</div>
-    <ul>
-        <li>MC Authority paperwork</li>
-        <li>Fuel receipt audit for savings</li>
-        <li>Set up cloud storage (Google Drive)</li>
-    </ul>
-</div>
-
-<div class="pricing">
-    <div class="section-title"><i class="fa-solid fa-calendar icon"></i>Pricing</div>
-    <table>
-        <tr>
-            <td>Hourly rate</td>
-            <td>$25-35 USD</td>
-        </tr>
-        <tr>
-            <td>Monthly flat package (25h)</td>
-            <td>$500-800 USD</td>
-        </tr>
-    </table>
-</div>
-
-<div class="steps">
-    <div class="section-title"><i class="fa-solid fa-list-check icon"></i>Get Started</div>
-    <ol>
-        <li>15-min chat about your biggest headache</li>
-        <li>Free trial – I chase your oldest unpaid invoice</li>
-        <li>You pick 5-25h/week, I handle the rest</li>
-    </ol>
-    <button>Get Started Now</button>
-</div>
-
-</div>
-
 </body>
-</html>
+    </html>
